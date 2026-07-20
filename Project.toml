@@ -1,0 +1,21 @@
+name = "MotivicHomotopy"
+uuid = "d0903492-03b1-4f76-bdfa-f29fa67f03a6"
+authors = ["Stephanie Atherton", "Nikita Borisov", "Thomas Brazelton", "Somak Dutta", "Frenly Espino", "Thomas Hagedorn", "Zhaobo Han", "Jordy Lopez Garcia", "Joel Louwsma", "Yuyuan Luo", "Wern Juin Gabriel Ong", "Ruzho Sagayaraj", "Andrew Tawfeek"]
+version = "0.1.0"
+
+[deps]
+HomotopyContinuation = "f213a82b-91d6-5c5d-acf7-10f1c761b327"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Oscar = "f1435218-dba5-11e9-1e4d-f1a5fab5fc13"
+
+[compat]
+HomotopyContinuation = "2.19"
+LinearAlgebra = "1.10"
+Oscar = "1.7"
+julia = "1.11"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

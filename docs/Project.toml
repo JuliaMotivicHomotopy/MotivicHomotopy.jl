@@ -1,0 +1,6 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+MotivicHomotopy = "d0903492-03b1-4f76-bdfa-f29fa67f03a6"
+
+[compat]
+Documenter = "1"
