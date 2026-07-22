@@ -5,7 +5,7 @@ DocMeta.setdocmeta!(MotivicHomotopy, :DocTestSetup, :(using MotivicHomotopy); re
 
 makedocs(;
     modules=[MotivicHomotopy],
-    authors="Stephanie Atherton, Nikita Borisov, Thomas Brazelton, Somak Dutta, Frenly Espino, Thomas Hagedorn, Zhaobo Han, Jordy Lopez Garcia, Joel Louwsma, Yuyuan Luo, Wern Juin Gabriel Ong, Ruzho Sagayaraj, Andrew Tawfeek",
+    authors="The MotivicHomotopy.jl contributors",
     sitename="MotivicHomotopy.jl",
     format=Documenter.HTML(;
         canonical="https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl",
