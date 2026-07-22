@@ -1,6 +1,6 @@
 name = "MotivicHomotopy"
 uuid = "d0903492-03b1-4f76-bdfa-f29fa67f03a6"
-authors = ["Stephanie Atherton", "Nikita Borisov", "Thomas Brazelton", "Somak Dutta", "Frenly Espino", "Thomas Hagedorn", "Zhaobo Han", "Jordy Lopez Garcia", "Joel Louwsma", "Yuyuan Luo", "Wern Juin Gabriel Ong", "Ruzho Sagayaraj", "Andrew Tawfeek"]
+authors = ["The MotivicHomotopy.jl contributors"]
 version = "0.1.0"
 
 [deps]
