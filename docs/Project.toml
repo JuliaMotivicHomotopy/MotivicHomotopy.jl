@@ -4,3 +4,4 @@ MotivicHomotopy = "d0903492-03b1-4f76-bdfa-f29fa67f03a6"
 
 [compat]
 Documenter = "1"
+MotivicHomotopy = "0.1.0"
