@@ -42,12 +42,12 @@ k^×-scalar.
 
 ## Installation
 
-The package requires Julia ≥ 1.11 and is not yet registered; install it
-directly from the repository:
+The package requires Julia ≥ 1.11 and is registered in the
+[General registry](https://github.com/JuliaRegistries/General):
 
 ```julia
 using Pkg
-Pkg.add(url = "https://github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl")
+Pkg.add("MotivicHomotopy")
 ```
 
 Its main computational dependencies, [Oscar](https://www.oscar-system.org/) and

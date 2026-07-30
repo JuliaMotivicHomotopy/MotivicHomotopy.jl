@@ -12,7 +12,7 @@ MotivicHomotopy
 
 ```julia
 using Pkg
-Pkg.add(url = "https://github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl")
+Pkg.add("MotivicHomotopy")
 ```
 
 ## Quick start
