@@ -50,7 +50,7 @@ result. Forms over ``\mathbb{R}`` / ``\mathbb{C}`` are represented by `Matrix{Fl
 `Matrix{ComplexF64}` Gram matrices; pass `Float64` / `ComplexF64` where a
 base field is expected.
 
-See the [API reference](@ref) for every exported function, grouped by topic.
+The full reference is split by task: [Working with forms](@ref), [Arithmetic methods](@ref), and [Computing A¹-Brouwer degrees](@ref).
 
 ## Conventions
 

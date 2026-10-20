@@ -9,9 +9,9 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Oscar = "f1435218-dba5-11e9-1e4d-f1a5fab5fc13"
 
 [compat]
-HomotopyContinuation = "2.19"
-LinearAlgebra = "1.10"
-Oscar = "1.7"
+HomotopyContinuation = "2.22"
+LinearAlgebra = "1.11"
+Oscar = "1.8"
 julia = "1.11"
 
 [extras]
