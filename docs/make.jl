@@ -9,7 +9,7 @@ makedocs(;
     sitename="MotivicHomotopy.jl",
     format=Documenter.HTML(;
         canonical="https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl",
-        edit_link="main",
+        edit_link="dev",
         sidebar_sitename=false,
         assets=String[],
     ),
@@ -26,5 +26,5 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl",
-    devbranch="main",
+    devbranch="dev",
 )
