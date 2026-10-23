@@ -1,7 +1,7 @@
 name = "MotivicHomotopy"
 uuid = "d0903492-03b1-4f76-bdfa-f29fa67f03a6"
 authors = ["The MotivicHomotopy.jl contributors"]
-version = "0.1.0"
+version = "1.0.0"
 
 [deps]
 HomotopyContinuation = "f213a82b-91d6-5c5d-acf7-10f1c761b327"
