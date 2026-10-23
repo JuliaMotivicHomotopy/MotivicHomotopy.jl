@@ -8,10 +8,10 @@ makedocs(;
     authors="The MotivicHomotopy.jl contributors",
     sitename="MotivicHomotopy.jl",
     format=Documenter.HTML(;
-        canonical="https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl",
+        canonical="https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl/stable",
         edit_link="dev",
         sidebar_sitename=false,
-        assets=String[],
+        assets=["assets/favicon.ico"],
     ),
     pages=[
         "Home" => "index.md",
@@ -24,7 +24,18 @@ makedocs(;
     doctest=false,
 )
 
-deploydocs(;
-    repo="github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl",
-    devbranch="dev",
-)
+# Each branch's documentation is built from that branch's code: `main`, which
+# holds the released code, is published at /stable, and `dev`, the development
+# branch, at /dev. Other builds (pull requests, tags, local builds) are not
+# deployed.
+const DOCS_FOLDERS = Dict("main" => "stable", "dev" => "dev")
+const BUILD_BRANCH = replace(get(ENV, "GITHUB_REF", ""), r"^refs/heads/" => "")
+
+if haskey(DOCS_FOLDERS, BUILD_BRANCH)
+    deploydocs(;
+        repo="github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl",
+        devbranch=BUILD_BRANCH,
+        devurl=DOCS_FOLDERS[BUILD_BRANCH],
+        versions=["stable" => "stable", "dev" => "dev"],
+    )
+end

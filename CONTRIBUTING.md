@@ -2,13 +2,12 @@
 
 ## Branches and pull requests
 
-- `dev` is the development branch. Open pull requests against `dev`. The
-  "dev" documentation is built from it.
-- `main` is the release branch. It changes only through a release pull request
-  from `dev`, and every release is registered from `main`. The stable
-  documentation is built from the release tags.
-- After a release pull request is merged, `dev` is reset to `main`, so the two
-  branches carry the same code at every release.
+- `dev` is the development branch. Open pull requests against `dev`. Between
+  releases `dev` runs ahead of `main`. Its documentation is published at
+  `/dev`.
+- `main` holds the released code. A release brings `main` up to date with
+  `dev` through a pull request from `dev` into `main`, and is registered from
+  `main`. Its documentation is published at `/stable`.
 
 ## Versioning
 

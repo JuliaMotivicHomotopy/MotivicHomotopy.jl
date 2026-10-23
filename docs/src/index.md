@@ -15,6 +15,16 @@ using Pkg
 Pkg.add("MotivicHomotopy")
 ```
 
+The development version, from the `dev` branch, can be installed with
+
+```julia
+Pkg.add(url="https://github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl", rev="dev")
+```
+
+The documentation is published for both: [stable](https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl/stable/)
+is built from `main`, which holds the released code, and [dev](https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl/dev/)
+from the `dev` branch.
+
 ## Quick start
 
 ```julia
