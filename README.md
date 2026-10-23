@@ -6,8 +6,10 @@
 </p>
 
 <p align="center">
+  <a href="https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl/stable/"><img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Stable"></a>
   <a href="https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl/dev/"><img src="https://img.shields.io/badge/docs-dev-blue.svg" alt="Dev"></a>
-  <a href="https://github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl/actions/workflows/CI.yml?query=branch%3Amain"><img src="https://github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl/actions/workflows/CI.yml/badge.svg?branch=main" alt="Build Status"></a>
+  <a href="https://github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl/actions/workflows/CI.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/JuliaMotivicHomotopy/MotivicHomotopy.jl/CI.yml?branch=main&label=CI%20main" alt="Build Status (main)"></a>
+  <a href="https://github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl/actions/workflows/CI.yml?query=branch%3Adev"><img src="https://img.shields.io/github/actions/workflow/status/JuliaMotivicHomotopy/MotivicHomotopy.jl/CI.yml?branch=dev&label=CI%20dev" alt="Build Status (dev)"></a>
   <a href="https://codecov.io/gh/JuliaMotivicHomotopy/MotivicHomotopy.jl"><img src="https://codecov.io/gh/JuliaMotivicHomotopy/MotivicHomotopy.jl/branch/main/graph/badge.svg" alt="Coverage"></a>
 </p>
 
@@ -48,6 +50,12 @@ The package requires Julia ≥ 1.11 and is registered in the
 ```julia
 using Pkg
 Pkg.add("MotivicHomotopy")
+```
+
+The development version, from the `dev` branch, can be installed with
+
+```julia
+Pkg.add(url="https://github.com/JuliaMotivicHomotopy/MotivicHomotopy.jl", rev="dev")
 ```
 
 Its main computational dependencies, [Oscar](https://www.oscar-system.org/) and
@@ -93,7 +101,8 @@ Which arithmetic runs is determined by the base field:
 | ℝ | compute over ℚ and base-change the resulting Gram matrix (`Matrix{Float64}` represents forms over ℝ) |
 | ℂ | stable degrees are rank-only and come from the exact computation; unstable degrees are computed numerically via HomotopyContinuation.jl |
 
-See the [documentation](https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl/dev/)
+See the documentation for the [released version](https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl/stable/)
+or the [development version](https://JuliaMotivicHomotopy.github.io/MotivicHomotopy.jl/dev/)
 for the full API reference, conventions (e.g. `==` is literal Gram-matrix
 equality; mathematical equality is `is_isomorphic_form`), and version history.
 

@@ -1,5 +1,14 @@
 # Contributing to MotivicHomotopy.jl
 
+## Branches and pull requests
+
+- `dev` is the development branch. Open pull requests against `dev`. Between
+  releases `dev` runs ahead of `main`. Its documentation is published at
+  `/dev`.
+- `main` holds the released code. A release brings `main` up to date with
+  `dev` through a pull request from `dev` into `main`, and is registered from
+  `main`. Its documentation is published at `/stable`.
+
 ## Versioning
 
 MotivicHomotopy.jl follows Semantic Versioning as interpreted by Julia's package
@@ -7,22 +16,19 @@ manager, and versions the package's public Julia API — not the maturity of the
 underlying mathematics, which it inherits from the Macaulay2 package it is based
 on.
 
-The package is in the 0.x series deliberately: the API is still stabilizing.
-Under Julia/Pkg's reading of SemVer, in 0.x the first nonzero component is the
-breaking one. While the package is 0.MINOR.PATCH:
+Version 1.0.0 marks the Julia API as stable. From 1.0.0 on:
 
-- 0.MINOR.PATCH → 0.MINOR.(PATCH+1): non-breaking — bug fixes and internal
-  changes that do not alter the public API.
-- 0.MINOR.PATCH → 0.(MINOR+1).0: may change the public API — new features
-  and/or breaking changes.
+- MAJOR.MINOR.PATCH → MAJOR.MINOR.(PATCH+1): non-breaking — bug fixes and
+  internal changes that do not alter the public API.
+- MAJOR.MINOR.PATCH → MAJOR.(MINOR+1).0: non-breaking — new features that
+  leave the existing public API intact.
+- MAJOR.MINOR.PATCH → (MAJOR+1).0.0: breaking changes to the public API.
 
 Increments must be standard (the General registry requires it): bump exactly one
 component by one, and never skip numbers. Any release that breaks the public API
 must carry release notes that say so (mention "breaking").
 
-1.0.0 is reserved for when the Julia API has stabilized — the core port is
-complete, the type and naming conventions are settled, and the interface has
-seen enough use to be worth committing to. Releasing 1.0.0 promises that
+The 0.x series (v0.1.0) preceded the stable API. Releasing 1.0.0 promises that
 subsequent breaking changes will require 2.0.0.
 
 ### Relationship to A1BrouwerDegrees

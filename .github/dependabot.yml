@@ -1,8 +1,11 @@
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 version: 2
+# All update pull requests target the development branch; main changes only
+# through release pull requests from dev.
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "dev"
     schedule:
       interval: "weekly"
     # To group all GitHub Actions updates into a single PR, uncomment the following:
@@ -14,6 +17,7 @@ updates:
     directories:
       - "/"
       - "/test"
+    target-branch: "dev"
     schedule:
       interval: "weekly"
     # To group all Julia dependency updates into a single PR, uncomment the following:
@@ -25,6 +29,7 @@ updates:
   # is never PR-bumped by dependabot.
   - package-ecosystem: "julia"
     directory: "/docs"
+    target-branch: "dev"
     schedule:
       interval: "weekly"
     ignore:
