@@ -112,12 +112,14 @@ end
 """
     relevant_primes(beta::GWClass)
 
-A finite list of primes containing every prime at which the Hasse–Witt
-invariant of the rational form `beta` can be nontrivial. The Hasse–Witt
-invariants of a form equal 1 at all but finitely many primes ([S73, IV
-§3.3]); since they are products of Hilbert symbols of the diagonal entries, it
-suffices to take the primes dividing the entries of a squarefree diagonal
-representative.
+The primes dividing the entries of a squarefree diagonal representative of the
+rational form `beta`. Together with 2 they contain every prime at which the
+Hasse–Witt invariant of `beta` can be nontrivial: the Hasse–Witt invariants of a
+form equal 1 at all but finitely many primes ([S73, IV §3.3]), and as products
+of Hilbert symbols of the diagonal entries they are 1 at every odd prime not
+dividing an entry. The prime 2 is listed only when it divides an entry, but the
+invariant at 2 can be nontrivial even when it does not: ``⟨-1, -1⟩`` has no
+relevant primes and Hasse–Witt invariant ``-1`` at 2.
 
 # Examples
 ```julia-repl
@@ -159,9 +161,10 @@ diagonalization ``⟨a_1, …, a_n⟩``, the product ``∏_{i<j} (a_i, a_j)_p`` 
 pairwise Hilbert symbols (see [`hilbert_symbol_padic`](@ref)). The list
 variant takes the diagonal entries directly.
 
-The invariant equals 1 for all but finitely many primes — for `p` not
+The invariant equals 1 for all but finitely many primes — for an odd `p` not
 dividing any entry of a squarefree diagonal representative it is
-automatically 1 — so only the [`relevant_primes`](@ref) need checking.
+automatically 1 — so only the [`relevant_primes`](@ref) and 2 need checking.
+At 2 it can be nontrivial even when 2 divides no entry, as for ``⟨-1, -1⟩``.
 
 # Examples
 ```julia-repl

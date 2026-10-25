@@ -278,13 +278,21 @@ function divisorial_sum(class_list::AbstractVector{<:GWuClass},
         roots[i] = r
     end
 
+    # Classes over distinct Galois fields of the same order are moved into the
+    # first one's field, as in gw_direct_sum; roots and scalars are coerced along.
+    M1 = gw_matrix(class_list[1])
+    mats = [M1 isa MatElem ? _align_second(M1, gw_matrix(c)) : gw_matrix(c)
+            for c in class_list]
+    roots = [_coerce_scalar(M1, r) for r in roots]
+    scalars = [_coerce_scalar(M1, gw_scalar(c)) for c in class_list]
+    (any(isnothing, roots) || any(isnothing, scalars)) && error(_FIELD_MISMATCH_ERR)
+
     mults = [_gram_rank(gw_matrix(c)) for c in class_list]
-    new_scalar = prod(gw_scalar(c) for c in class_list)
+    new_scalar = prod(scalars)
     for i in 1:n, j in (i + 1):n
         new_scalar *= (roots[i] - roots[j])^(2 * mults[i] * mults[j])
     end
 
-    mats = [gw_matrix(c) for c in class_list]
     new_form = mats[1] isa MatElem ? block_diagonal_matrix(mats) :
         reduce(_float_block_diag, mats)
     GWuClass(new_form, new_scalar)

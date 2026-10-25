@@ -18,6 +18,21 @@ using MotivicHomotopy
     @test padic_valuation(27, 3) == 3
 end
 
+@testset "padic_valuation needs a prime (consistency)" begin
+    @test_throws ErrorException padic_valuation(12, 4)
+    @test_throws ErrorException padic_valuation(12//5, 4)
+end
+
+@testset "Hasse-Witt invariant at 2 for odd entries (consistency)" begin
+    # (a, b)_2 = (-1)^((a-1)/2 (b-1)/2) for odd a, b: the invariant at 2 can be -1
+    # although 2 is not a relevant prime, as the docstrings now say
+    for D in ((-1, -1), (3, 3), (3, 7), (-1, -1, -1))
+        q = diagonal_form(QQ, D)
+        @test !(ZZ(2) in relevant_primes(q))
+        @test hasse_witt_invariant(q, 2) == -1
+    end
+end
+
 # ---------- rank / signature / discriminant / relevant primes ----------
 
 @testset "M2 Test 44 — getRank" begin

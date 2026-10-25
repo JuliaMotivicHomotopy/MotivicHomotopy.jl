@@ -67,6 +67,11 @@ end
     # order ([x, 1]) — compared as a set.
     @test length(B) == 2
     @test Set(B) == Set([one(S), x])
+    # an ideal that is not prime would merge the local algebras of two zeros,
+    # here (0, 0) and (1, 0) of the cubic below
+    Sd, (u, v) = polynomial_ring(QQ, ["u", "v"])
+    @test_throws ErrorException local_algebra_basis([u^3 - u^2 - v, v],
+                                                    ideal(Sd, [u * (u - 1), v]))
 end
 
 @testset "Doc-example cross-check — cubic meets the x-axis (M2 capture)" begin

@@ -160,6 +160,15 @@ end
     @test sum_decomposition_string(GWClass(zero_matrix(QQ, 0, 0))) == "empty form"
 end
 
+@testset "sum_decomposition_string over a non-prime finite field (consistency)" begin
+    # elements of the prime field are balanced modulo the characteristic, 4 -> -1
+    # in GF(25); others have no integer representative and print as themselves
+    F25, o = finite_field(5, 2, "o")
+    @test sum_decomposition_string(GWClass(matrix(F25, 1, 1, [F25(4)]))) == "<-1>"
+    @test sum_decomposition_string(GWClass(matrix(F25, 1, 1, [o]))) == "<o>"
+    @test sum_decomposition_string(GWClass(matrix(F25, [o 1; 1 2]))) isa String
+end
+
 @testset "Unstable sum decomposition (M2 capture)" begin
     u = GWuClass(matrix(QQ, [0 1; 1 0]), -4)
     su = sum_decomposition(u)

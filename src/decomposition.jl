@@ -230,8 +230,9 @@ _m2_string(x::QQFieldElem) = isone(denominator(x)) ? string(numerator(x)) :
     string(numerator(x)) * "/" * string(denominator(x))
 _m2_string(x::ZZRingElem) = string(x)
 function _m2_string(x::FinFieldElem)
+    p = characteristic(parent(x))
+    x^p == x || return string(x)   # outside the prime field: no integer to balance
     v = lift(ZZ, x)
-    p = order(parent(x))
     string(2 * v > p ? v - p : v)
 end
 _m2_string(x::Float64) = isinteger(x) ? string(Int(x)) : string(x)

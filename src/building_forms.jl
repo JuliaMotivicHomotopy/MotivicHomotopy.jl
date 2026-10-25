@@ -29,8 +29,17 @@ function _coerce_into(R::FinField, b)
 end
 
 function _coerce_into(R::MPolyQuoRing, b)
-    (b isa MPolyQuoRingElem && parent(b) === R) || return nothing
-    b
+    b isa MPolyQuoRingElem && return parent(b) === R ? b : nothing
+    # scalars of the coefficient field, e.g. the ±1 of hyperbolic_form
+    kk = coefficient_ring(base_ring(R))
+    c = if b isa Union{Integer, ZZRingElem}
+        kk(b)
+    elseif b isa Union{Rational, QQFieldElem} && characteristic(kk) == 0
+        kk(QQ(b))
+    else
+        _coerce_into(kk, b)
+    end
+    c === nothing ? nothing : R(c)
 end
 
 function _coerce_into(R::Field, b)   # other exact fields: element of R required
@@ -38,8 +47,11 @@ function _coerce_into(R::Field, b)   # other exact fields: element of R required
     b
 end
 
-_coerce_into(::Type{Float64}, b) = b isa Real ? Float64(b) : nothing
-_coerce_into(::Type{ComplexF64}, b) = b isa Number ? ComplexF64(b) : nothing
+_coerce_into(::Type{Float64}, b) =
+    b isa Union{Real, ZZRingElem, QQFieldElem} ? Float64(b) : nothing
+_coerce_into(::Type{ComplexF64}, b) =
+    b isa Union{ZZRingElem, QQFieldElem} ? ComplexF64(Float64(b)) :
+    b isa Number ? ComplexF64(b) : nothing
 _coerce_into(::Any, ::Any) = nothing
 
 function _coerce_into_or_error(kk, b)
@@ -140,7 +152,7 @@ end
     pfister_form(kk, a₁, a₂, …)
 
 The [`GWClass`](@ref) of the Pfister form ``⟨⟨a_1, …, a_n⟩⟩`` over the field
-`kk`: the rank-``2^n`` tensor product
+or finite étale algebra `kk`: the rank-``2^n`` tensor product
 ``⟨1, -a_1⟩ ⊗ ⋯ ⊗ ⟨1, -a_n⟩``. A single entry produces a one-fold Pfister
 form.
 

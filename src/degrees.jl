@@ -54,12 +54,15 @@ function local_algebra_basis(L::Vector{<:MPolyRingElem}, p::MPolyIdeal)
         error("this computation is only supported over polynomial rings over fields")
     is_subset(I, p) ||
         error("the polynomials of the list do not vanish at the prescribed ideal")
-    try
+    prime = try
         is_prime(p)
     catch
         println("warning: Unable to verify whether the prime ideal is an " *
                 "isolated zero of the list of polynomials")
+        true
     end
+    # a non-prime ideal would sum the local algebras of several points
+    prime || error("the prescribed ideal is not prime")
     dim(I) > 0 && error("morphism does not have isolated zeros")
     is_subset(I, p) || error("prime is not a zero of function")
     J = quotient(I, saturation(I, p))

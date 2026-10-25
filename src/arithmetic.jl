@@ -24,7 +24,7 @@ _prime_factors(n::ZZRingElem) = sort!(prime_divisors(abs(n)))
 
 The ``p``-adic valuation of a nonzero integer or rational number `a`: the
 integer ``n`` with ``a = u·p^n`` for a unit ``u`` of ``\\mathbb{Z}_p``. Errors on
-``a = 0``.
+``a = 0`` and when ``p`` is not prime.
 
 # Examples
 
@@ -37,10 +37,12 @@ julia> padic_valuation(363//7, 11)
 """
 function padic_valuation(n::Union{Integer, ZZRingElem}, p::Union{Integer, ZZRingElem})
     iszero(n) && error("Trying to find prime factorization of 0")
+    is_prime(ZZ(p)) || error("second argument must be a prime number")
     valuation(ZZ(n), ZZ(p))
 end
 function padic_valuation(q::Union{Rational, QQFieldElem}, p::Union{Integer, ZZRingElem})
     iszero(q) && error("Trying to find prime factorization of 0")
+    is_prime(ZZ(p)) || error("second argument must be a prime number")
     valuation(QQ(q), ZZ(p))
 end
 
