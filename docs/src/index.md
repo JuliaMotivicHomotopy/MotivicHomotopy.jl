@@ -92,12 +92,14 @@ releases listed below build on it.
   A. Tawfeek.
 - **v1.0.0** — first stable release. Raises the minimum supported versions to
   Oscar 1.8 and HomotopyContinuation 2.22, and reorganizes the manual into
-  task-based pages. The API is that of v0.1.0, with two corrections, the first
-  of them breaking. For a finite étale algebra ``L/k``, [`transfer_gw`](@ref)
+  task-based pages. The API is that of v0.1.0, with three corrections, the
+  first of them breaking. For a finite étale algebra ``L/k``, [`transfer_gw`](@ref)
   now returns the transfer along the trace ``\text{Tr}_{L/k}``, which sends a
   form of rank ``n`` over ``L`` to a form of rank ``n[L : k]``; v0.1.0 returned
   a form of rank ``n``, the traces of the entries of a diagonalization. Over
   ``\mathbb{Q}``, [`anisotropic_part`](@ref), and with it
   [`sum_decomposition`](@ref) and [`sum_decomposition_string`](@ref), no longer
   returns a form of the wrong rank for some forms of anisotropic dimension at
-  least 3.
+  least 3. Over a quotient ring built with a monomial ordering other than the
+  default, [`multiplication_matrix`](@ref), [`algebra_trace`](@ref) and
+  [`algebra_norm`](@ref) no longer return wrong values.

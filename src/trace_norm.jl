@@ -37,11 +37,15 @@ function multiplication_matrix(A::MPolyQuoRing, a)
     n = length(B)
     kk = coefficient_ring(base_ring(A))
     M = zero_matrix(kk, n, n)
-    for j in 1:n
-        f = lift(simplify(aA * A(B[j])))   # reduced representative, in span of B
-        for i in 1:n
-            M[i, j] = coeff(f, B[i])
-        end
+    fa = lift(aA)
+    (n == 0 || iszero(fa)) && return M   # normal_form mishandles a zero input
+    # reduced representatives, in span of B: monomial_basis takes the standard
+    # monomials of the default ordering, so reduce in that ordering too, not in
+    # the one A was built with (simplify would use the latter); one call for all
+    # columns, since each call has a fixed cost over prime fields
+    F = normal_form([fa * b for b in B], modulus(A))
+    for j in 1:n, i in 1:n
+        M[i, j] = coeff(F[j], B[i])
     end
     M
 end

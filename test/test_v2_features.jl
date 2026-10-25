@@ -164,6 +164,23 @@ end
     @test_throws ErrorException transfer_gw(GWClass(matrix(E, 1, 1, [E(1 + t)])))
 end
 
+@testset "Trace, norm and transfer over a quotient with lex ordering (consistency)" begin
+    # QQ[x, y]/(x - y^2, y^4 - 2) is QQ(2^(1/4)); built with the lex ordering, its
+    # standard monomials 1, y, y^2, y^3 are not those of the default ordering, and
+    # the results must not depend on the ordering the quotient was built with
+    S, (x, y) = polynomial_ring(QQ, ["x", "y"])
+    I = ideal(S, [x - y^2, y^4 - 2])
+    L, _ = quo(S, I; ordering = lex(S))
+    @test algebra_trace(L, L(1)) == 4
+    @test algebra_trace(L, L(x)) == 0              # Tr(2^(1/2))
+    @test algebra_norm(L, L(y)) == -2              # N(2^(1/4)) = -2 from y^4 - 2
+    Ld, _ = quo(S, I)
+    @test multiplication_matrix(L, L(x + y)) == multiplication_matrix(Ld, Ld(x + y))
+    # trace form on 1, x, y, xy, from Tr(y^m) = 4, 0, 0, 0, 8, 0, 0 for m = 0..6
+    @test transfer_gw(GWClass(matrix(L, 1, 1, [one(L)]))) ==
+        GWClass(matrix(QQ, [4 0 0 0; 0 8 0 0; 0 0 0 8; 0 0 8 0]))
+end
+
 @testset "M2 Test 36 — unstable degrees over QQ (literal + class-level)" begin
     R, (x,) = polynomial_ring(QQ, ["x"])
     q = (x^5 - 6 * x^4 + 11 * x^3 - 2 * x^2 - 12 * x + 8) //
