@@ -42,8 +42,8 @@ the user to compute over ``\\mathbb{Q}`` and base-change the result.
 
 This package is a Julia port of the Macaulay2 package `A1BrouwerDegrees`
 (v2.0); v1.1 is published in the Journal of Software for Algebra and Geometry
-(14, 2024). It was ported by Claude Fable 5 (Anthropic), with the Macaulay2
-package as the authoritative specification for mathematical behavior.
+(14, 2024). It was ported by Claude Fable 5 (Anthropic), and its behavior was
+verified against the Macaulay2 package.
 """
 module MotivicHomotopy
 
