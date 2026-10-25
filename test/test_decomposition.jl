@@ -87,6 +87,35 @@ end
     @test is_isomorphic_form(b, diagonal_form(QQ, (-1, -1, -1)))
 end
 
+@testset "QQ dim-3 reducer, sign and 2-adic class of the split (consistency)" begin
+    # The split <a> must be represented by the anisotropic part: a must have its
+    # sign when that part is definite, and, when 2 is not a relevant prime, avoid
+    # the one 2-adic square class it may miss. In the first three forms both CRT
+    # representatives nearest 0 fail one of these conditions.
+    #
+    # <1,1,1,7,-7> = <1,1,1> + H: 7 is not a sum of three squares; -42 is negative
+    a = check_witt_decomposition(diagonal_form(QQ, (1, 1, 1, 7, -7)))
+    @test is_isomorphic_form(a, diagonal_form(QQ, (1, 1, 1)))
+    # <-1,-1,-1,-1,7> = <-2,-6,-21> + H, since <1,1,1,1> = <7,2,6,21> on the
+    # orthogonal basis (2,1,1,1), (0,1,-1,0), (0,1,1,-2), (3,-2,-2,-2): here 6 is
+    # positive, and -1 lies in the 2-adic class of 7, which the part misses
+    a = check_witt_decomposition(diagonal_form(QQ, (-1, -1, -1, -1, 7)))
+    @test is_isomorphic_form(a, diagonal_form(QQ, (-2, -6, -21)))
+    # rank 12, through the dim-4 reducer and then the dim-3 reducer at signature -3
+    q = diagonal_form(QQ, (59, 59, 7, 7, -1, -1, -1, -1, -1, -1, -1, -1))
+    @test anisotropic_dimension(q) == 4
+    a = check_witt_decomposition(q)
+    @test form_signature(a) == -4
+    # <s a1, s a2, s a3> + <e,-e> with a1, a2, a3, e odd and s = ±1: a definite,
+    # hence anisotropic, ternary form plus H, so the anisotropic part is the
+    # ternary form; its entries meet all four 2-adic unit classes
+    for a1 in 1:2:7, a2 in a1:2:7, a3 in a2:2:7, e in 1:2:7, sgn in (1, -1)
+        q = diagonal_form(QQ, (sgn * a1, sgn * a2, sgn * a3, e, -e))
+        @test is_isomorphic_form(anisotropic_part(q),
+                                 diagonal_form(QQ, (sgn * a1, sgn * a2, sgn * a3)))
+    end
+end
+
 @testset "Per-field anisotropic parts (M2 capture, literal)" begin
     # RR: diag(1,1,-1) -> [[1]]
     @test gw_matrix(anisotropic_part(GWClass([1.0 0 0; 0 1 0; 0 0 -1]))) == [1.0;;]

@@ -31,22 +31,28 @@ function _reduce_aniso_dim3(beta::GWClass)
     end
     alpha = isempty(moduli) ? one(ZZ) : crt(residues, moduli)
     bigM = isempty(moduli) ? one(ZZ) : prod(moduli)
-    # The congruences fix alpha only modulo bigM (and hence fix its square class
-    # at every relevant finite prime); they say nothing about the real place, so
-    # representatives alpha + k*bigM of opposite sign are all admissible at the
-    # finite primes. Choose the sign for which beta ⊕ ⟨-alpha⟩ actually has
-    # anisotropic dimension 2 — the split is valid only then. (A signature-based
-    # heuristic is not enough: for signature ±1 either sign can over-reduce, and
-    # which one does is representative-dependent.)
+    # The split is valid exactly when the anisotropic part of beta represents a,
+    # i.e. when beta ⊕ ⟨-a⟩ has anisotropic dimension 2. Over ℚ_p an anisotropic
+    # ternary form represents every square class except that of -disc.
+    # Every a ≡ alpha mod bigM avoids that class at each relevant prime p, 2
+    # included, as v_p(a) and v_p(d) have opposite parity; a prime that is neither
+    # relevant nor 2 imposes nothing, beta being unimodular of rank ≥ 3 there.
+    # That leaves the real place, where a definite anisotropic part needs a of its
+    # own sign, and the prime 2 when it is not relevant, where one 2-adic unit
+    # class can be missed. So scan the representatives of both signs outward from
+    # 0 and return the first a that passes the global check. Eight of each sign
+    # suffice: when 2 is not relevant bigM is odd, so they meet all four odd
+    # residues mod 8, at most one of whose classes is missed.
     r = mod(alpha, bigM)
-    candidates = iszero(r) ? (bigM, -bigM) : (r, r - bigM)
-    for cand in candidates
+    pos = iszero(r) ? bigM : r            # least positive representative
+    neg = iszero(r) ? -bigM : r - bigM    # greatest negative representative
+    for k in 0:7, cand in (pos + k * bigM, neg - k * bigM)
         a = _squarefree_part(cand)
         if anisotropic_dimension(gw_direct_sum(beta, diagonal_form(QQ, -a))) == 2
             return diagonal_form(QQ, a)
         end
     end
-    diagonal_form(QQ, _squarefree_part(alpha))   # fallback (not expected)
+    error("no splitting element found for a form of anisotropic dimension 3")
 end
 
 # M2: getAnisotropicPartQQDimension2 — the anisotropic part when aniso dim == 2
