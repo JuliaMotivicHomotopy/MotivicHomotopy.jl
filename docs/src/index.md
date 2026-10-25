@@ -92,14 +92,32 @@ releases listed below build on it.
   A. Tawfeek.
 - **v1.0.0** — first stable release. Raises the minimum supported versions to
   Oscar 1.8 and HomotopyContinuation 2.22, and reorganizes the manual into
-  task-based pages. The API is that of v0.1.0, with three corrections, the
-  first of them breaking. For a finite étale algebra ``L/k``, [`transfer_gw`](@ref)
-  now returns the transfer along the trace ``\text{Tr}_{L/k}``, which sends a
-  form of rank ``n`` over ``L`` to a form of rank ``n[L : k]``; v0.1.0 returned
-  a form of rank ``n``, the traces of the entries of a diagonalization. Over
-  ``\mathbb{Q}``, [`anisotropic_part`](@ref), and with it
-  [`sum_decomposition`](@ref) and [`sum_decomposition_string`](@ref), no longer
-  returns a form of the wrong rank for some forms of anisotropic dimension at
-  least 3. Over a quotient ring built with a monomial ordering other than the
-  default, [`multiplication_matrix`](@ref), [`algebra_trace`](@ref) and
-  [`algebra_norm`](@ref) no longer return wrong values.
+  task-based pages. The API is that of v0.1.0, with the following corrections,
+  the first of them breaking.
+  - For a finite étale algebra ``L/k``, [`transfer_gw`](@ref) now returns the
+    transfer along the trace ``\text{Tr}_{L/k}``, which sends a form of rank
+    ``n`` over ``L`` to a form of rank ``n[L : k]``; v0.1.0 returned a form of
+    rank ``n``, the traces of the entries of a diagonalization.
+  - Over ``\mathbb{Q}``, [`anisotropic_part`](@ref), and with it
+    [`sum_decomposition`](@ref) and [`sum_decomposition_string`](@ref), no
+    longer returns a form of the wrong rank for some forms of anisotropic
+    dimension at least 3.
+  - The unstable degrees over ``\mathbb{C}`` ([`global_unstable_A1_degree`](@ref)
+    and [`local_unstable_A1_degree`](@ref) with HomotopyContinuation input)
+    now normalize by the leading coefficient of the numerator, as the exact
+    computation does; for a numerator that is not monic the scalar was off by
+    a power of that coefficient.
+  - Over an étale algebra that is not a field, [`diagonalize_via_congruence`](@ref),
+    and with it [`diagonal_class`](@ref), no longer scales by a pivot that is
+    a zero divisor, which made the result degenerate on a factor of the
+    algebra.
+  - Over a quotient ring built with a monomial ordering other than the
+    default, [`multiplication_matrix`](@ref), [`algebra_trace`](@ref) and
+    [`algebra_norm`](@ref) no longer return wrong values.
+  - [`sum_decomposition_string`](@ref) works over finite fields that are not
+    prime fields. [`divisorial_sum`](@ref) accepts classes over distinct
+    finite fields of the same order, as [`gw_direct_sum`](@ref) does.
+    [`hyperbolic_form`](@ref) and [`pfister_form`](@ref) accept finite étale
+    algebras, and [`diagonal_form`](@ref) over `Float64` accepts rationals.
+    [`local_algebra_basis`](@ref) rejects an ideal that is not prime, and
+    [`padic_valuation`](@ref) a modulus that is not prime.
