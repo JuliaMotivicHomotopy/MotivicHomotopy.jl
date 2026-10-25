@@ -48,6 +48,26 @@ using MotivicHomotopy
         matrix(A, 2, 2, [A(2), A(0), A(0), A(x) - A(1) * inv(A(2))])
 end
 
+@testset "Diagonalization over QQ x QQ with a zero-divisor pivot (consistency)" begin
+    # In S = QQ[y]/(y^2 - 1) = QQ x QQ the pivot y + 1 vanishes at y = -1; the
+    # result must still be congruent to the input on both factors y = 1, y = -1
+    Sp, (y,) = polynomial_ring(QQ, ["y"])
+    S, _ = quo(Sp, ideal(Sp, [y^2 - 1]))
+    at(M, s) = map_entries(e -> evaluate(lift(e), [QQ(s)]), M)
+    for M in (matrix(S, 2, 2, [S(y + 1), S(1), S(1), S(0)]),
+              matrix(S, 3, 3, [S(y + 1), S(1), S(2), S(1), S(0), S(y), S(2), S(y), S(3)]))
+        D = diagonalize_via_congruence(M)
+        @test all(iszero(D[i, j]) for i in 1:nrows(D), j in 1:ncols(D) if i != j)
+        for s in (1, -1)
+            @test !iszero(det(at(D, s)))
+            @test is_isomorphic_form(GWClass(at(D, s)), GWClass(at(M, s)))
+        end
+        # the diagonal class has the same transfer as the class itself
+        @test is_isomorphic_form(transfer_gw(diagonal_class(GWClass(M))),
+                                 transfer_gw(GWClass(M)))
+    end
+end
+
 @testset "M2 Test 38 — multiplication matrix over the GF(4) tower" begin
     F4 = GF(2, 2)
     g = gen(F4)                                # g^2 + g + 1 == 0, M2's x

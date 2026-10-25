@@ -79,7 +79,10 @@ entries is an artifact of the algorithm and is not normalized; use
 
 Over étale algebras that are not domains the elimination is performed
 fraction-free (rows and columns are scaled by the pivot instead of divided),
-so the result is congruent but its entries may carry square factors.
+so the result is congruent but its entries may carry square factors. Such an
+algebra is a product of fields, and a pivot that vanishes on some of them is
+first replaced, by a change of basis on those factors, with one that is nonzero
+on every factor where the remaining form is.
 
 # Examples
 ```julia-repl
@@ -136,6 +139,10 @@ function _diagonalize_ring!(A, n)
                 end
             end
         end
+        if base_ring(A) isa MPolyQuoRing && !iszero(A[col, col]) &&
+           !_is_unit_scalar(A[col, col])
+            _spread_pivot!(A, col, n)
+        end
         if !iszero(A[col, col])
             for row in (col + 1):n
                 t = A[row, col]
@@ -156,6 +163,55 @@ function _diagonalize_ring!(A, n)
         end
     end
     A
+end
+
+# Over an étale algebra that is not a domain (a product of fields) a nonzero
+# pivot can be a zero divisor, and scaling by it is then no congruence: it kills
+# the factors where it vanishes. Before eliminating, make the pivot nonzero on
+# every factor where the block from `col` on is nonzero. Such a factor has a
+# vector e_i or e_i + e_j (i, j ≥ col) of nonzero length, as the characteristic
+# is not 2; a basis change T bringing it to position `col` is applied only on the
+# factors where the pivot vanishes, as P = s·I + (1 - s)·T, which is invertible
+# whenever T is, s being the idempotent supporting the pivot.
+function _spread_pivot!(A, col, n)
+    R = base_ring(A)
+    s = _support_idempotent(A[col, col])
+    progress = true
+    while progress && !isone(s)
+        progress = false
+        for i in col:n, j in i:n
+            v = i == j ? A[i, i] : A[i, i] + 2 * A[i, j] + A[j, j]
+            iszero((1 - s) * v) && continue
+            T = identity_matrix(R, n)   # column col := e_i (+ e_j), column i := e_col
+            if i != col
+                T[col, col] = zero(R); T[i, i] = zero(R)
+                T[i, col] = one(R); T[col, i] = one(R)
+            end
+            i != j && (T[j, col] += one(R))
+            P = s * identity_matrix(R, n) + (1 - s) * T
+            B = transpose(P) * A * P
+            for r in 1:n, c in 1:n
+                A[r, c] = B[r, c]
+            end
+            s = _support_idempotent(A[col, col])
+            progress = true
+            break
+        end
+    end
+    A
+end
+
+# The idempotent of a finite étale algebra that is 1 on the factors where p is
+# nonzero and 0 on the others: p*y for any y with p^2*y = p.
+function _support_idempotent(p::MPolyQuoRingElem)
+    A = parent(p)
+    iszero(p) && return zero(A)
+    B = reverse(monomial_basis(A))   # the basis of multiplication_matrix
+    f = normal_form(lift(p), modulus(A))
+    rhs = matrix(coefficient_ring(base_ring(A)), length(B), 1, [coeff(f, b) for b in B])
+    ok, y = can_solve_with_solution(multiplication_matrix(A, p^2), rhs; side = :right)
+    ok || error("the algebra is not reduced, so it is not étale")
+    p * sum(y[i, 1] * A(B[i]) for i in eachindex(B))
 end
 
 function diagonalize_via_congruence(M::Matrix{T}) where {T <: Union{Float64, ComplexF64}}
