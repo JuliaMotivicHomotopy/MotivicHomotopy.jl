@@ -1,11 +1,12 @@
 # Invariants, in dependency order, plus the building-forms constructors that the
 # M2 TEST blocks use to set up their inputs.
 #
-# Ported from the TEST blocks of the A1BrouwerDegrees Macaulay2 package (v2.0):
+# Ported from the TEST blocks of the A1BrouwerDegrees Macaulay2 package (v2.1, on
+# the development branch of Macaulay2, whose numbering the labels follow):
 # Tests 7, 8, 16, 17, 21-25, 35, 42-46. Expected values are M2's asserts.
 #
 # Covered elsewhere: Tests 4-6 (test_degrees.jl); Tests 34, 36-37 and the étale
-# paths (test_v2_features.jl); Test 47 + decomposition (test_decomposition.jl).
+# paths (test_v2_features.jl); Tests 47-49 + decomposition (test_decomposition.jl).
 
 using Test
 using Oscar

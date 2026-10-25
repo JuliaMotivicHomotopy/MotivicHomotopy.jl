@@ -1,7 +1,8 @@
 # Local and global A¹-degrees via the Bézoutian (exact path: QQ, F_q).
 #
-# Ported from M2 TEST blocks 4, 5, 6, 9; Gram-matrix reference values captured from
-# M2 1.25.11. Comparisons against captures are class-level (is_isomorphic_form):
+# Ported from M2 TEST blocks 4, 5, 6, 9 (A1BrouwerDegrees v2.1, on the development
+# branch of Macaulay2); Gram-matrix reference values captured from M2 1.25.11.
+# Comparisons against captures are class-level (is_isomorphic_form):
 # the Gram matrix depends on the standard-monomial basis ORDER, and Oscar's
 # monomial_basis orders differently than M2's basis — the results are
 # permutation-congruent. M2's own TEST blocks compare class-level too.

@@ -1,6 +1,7 @@
 # Core types (GWClass / GWuClass).
 #
-# Ported from the TEST blocks of the A1BrouwerDegrees Macaulay2 package (v2.0).
+# Ported from the TEST blocks of the A1BrouwerDegrees Macaulay2 package (v2.1, on
+# the development branch of Macaulay2), whose numbering the labels follow.
 # Expected values are M2's — taken from the M2 TEST blocks, not derived independently.
 #
 # Porting notes:

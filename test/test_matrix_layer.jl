@@ -1,7 +1,8 @@
 # Matrix layer: diagonalization via congruence, per-field simplification,
 # diagonal class/entries.
 #
-# Ported from the TEST blocks of the A1BrouwerDegrees Macaulay2 package (v2.0):
+# Ported from the TEST blocks of the A1BrouwerDegrees Macaulay2 package (v2.1, on
+# the development branch of Macaulay2, whose numbering the labels follow):
 # Tests 0-2, 10-15, and the getDiagonalClass halves of Tests 26-28 (whose
 # stable-part halves are in test_core_types.jl). Expected values are M2's asserts.
 #

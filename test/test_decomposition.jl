@@ -1,10 +1,15 @@
 # Decomposition layer: anisotropic part, sum decomposition.
 #
 # Provenance of expected values:
-# - "M2 TEST 47": the only upstream TEST block for this layer (trivial paths only).
+# - "M2 Test 47", "M2 Tests 48–49": the TEST blocks for this layer in
+#   A1BrouwerDegrees v2.1, on the development branch of Macaulay2, whose numbering
+#   the labels follow — Test 47 the trivial paths, Tests 48-49 the Witt
+#   decomposition of forms reduced through the QQ dim-4 and dim-3 reducers.
 # - "M2 capture": captured by running M2 1.25.11 on the package —
-#   getSumDecomposition has NO upstream TEST block, and the QQ dim-4/3/2 reducers
-#   are only hit via trivial shortcuts upstream, so these runs are the oracle.
+#   getSumDecomposition has NO upstream TEST block, and these runs are its oracle.
+#   For the QQ reducers they are the only M2 reference for the dim-2 entry at
+#   rank > 2 and the dim-1 branch; the other captures repeat paths that Tests
+#   48-49 take.
 # - "consistency": validated via invariants and the Witt-decomposition identity
 #   q ≅ a ⊕ wH, not against captured M2 output.
 #
@@ -73,18 +78,22 @@ end
     @test gw_matrix(a) == matrix(QQ, [2;;])       # M2 capture: {{2}}
 end
 
-@testset "Negative-signature reducer paths (consistency)" begin
-    # Negative-signature forms whose reduction passes through the dim-4 and dim-3
-    # reducers; validated via invariants and the Witt decomposition q ≅ a ⊕ wH.
+@testset "M2 Tests 48–49 — getAnisotropicPart through the dim-4 and dim-3 reducers" begin
+    # Test 48: negative signature, through the dim-4 and then the dim-3 reducer
     q4neg = diagonal_form(QQ, (-1, -1, -1, -1, -1, 1))
     @test anisotropic_dimension(q4neg) == 4
     a = check_witt_decomposition(q4neg)
     @test is_isomorphic_form(a, diagonal_form(QQ, (-1, -1, -1, -1)))
 
+    # Test 49: the Witt decomposition q ≅ a ⊕ wH for either sign of the signature
+    for D in ((-1, -1, -1, -1, 1), (-2, -3, -5, -7, -11, 1),
+              (2, 3, 5, 7, 11, -1), (-1, -1, 2, 3, -5, 30))
+        check_witt_decomposition(diagonal_form(QQ, D))
+    end
+    # its first form, which enters the dim-3 reducer directly (consistency)
     q3neg = diagonal_form(QQ, (-1, -1, -1, -1, 1))
     @test anisotropic_dimension(q3neg) == 3
-    b = check_witt_decomposition(q3neg)
-    @test is_isomorphic_form(b, diagonal_form(QQ, (-1, -1, -1)))
+    @test is_isomorphic_form(anisotropic_part(q3neg), diagonal_form(QQ, (-1, -1, -1)))
 end
 
 @testset "QQ dim-3 reducer, sign and 2-adic class of the split (consistency)" begin

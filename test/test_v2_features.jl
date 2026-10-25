@@ -1,8 +1,9 @@
 # V2.0 features: étale diagonalization, multiplication matrix / trace / norm
 # TEST blocks, transferGW, unstable degrees.
 #
-# Provenance: M2 TESTs 34, 36-39 (inline asserts) + M2 1.25.11 capture runs for
-# literal references. Univariate unstable-degree Gram matrices compare LITERALLY
+# Provenance: M2 TESTs 34, 36-39 of A1BrouwerDegrees v2.1, on the development
+# branch of Macaulay2 (inline asserts) + M2 1.25.11 capture runs for literal
+# references. Univariate unstable-degree Gram matrices compare LITERALLY
 # (fixed monomial order, no basis call), unlike the multivariate stable degrees.
 # The transfer tests take their inputs from M2 TESTs 40-41, but derive the
 # expected values independently ("consistency"): trace forms by Newton's
@@ -218,6 +219,8 @@ end
     @test gw_matrix(deg1) == matrix(F, 1, 1, [inv(F(3))])        # M2: {{1/3}} = 10668
     @test gw_matrix(deg2) == matrix(F, 1, 1, [F(8) * inv(F(3))]) # M2: {{8/3}} = -10665
     @test is_isomorphic_form(Gdeg, GWuClass(matrix(F, [11 5; 5 3]))) # M2 TEST
+    @test is_isomorphic_form(deg1, GWuClass(matrix(F, 1, 1, [inv(F(3))])))          # M2 TEST
+    @test is_isomorphic_form(deg2, GWuClass(matrix(F, 1, 1, [F(8) * inv(F(3))])))   # M2 TEST
     degSum = divisorial_sum([deg1, deg2], [-2, 1])
     @test is_isomorphic_form(degSum, Gdeg)
 end
