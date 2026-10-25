@@ -1,9 +1,14 @@
 # V2.0 features: étale diagonalization, multiplication matrix / trace / norm
 # TEST blocks, transferGW, unstable degrees.
 #
-# Provenance: M2 TESTs 34, 36-41 (inline asserts) + M2 1.25.11 capture runs for
+# Provenance: M2 TESTs 34, 36-39 (inline asserts) + M2 1.25.11 capture runs for
 # literal references. Univariate unstable-degree Gram matrices compare LITERALLY
 # (fixed monomial order, no basis call), unlike the multivariate stable degrees.
+# The transfer tests take their inputs from M2 TESTs 40-41, but derive the
+# expected values independently ("consistency"): trace forms by Newton's
+# identities, the determinant identity det = det(T)^n N(det M), the signature at
+# the real embeddings, the defining entries Tr(M[i, j] b_s b_t), and Hecke's
+# restriction of scalars.
 #
 # Porting notes:
 # - multiplication_matrix uses M2's basis order (ascending standard monomials), so
@@ -68,7 +73,7 @@ end
     @test algebra_norm(K, a) == det(N)         # M2: getNorm == det N
 end
 
-@testset "M2 Test 40 — transferGW over QQ[x]/(x^5-x-1)" begin
+@testset "Transfer over QQ[x]/(x^5-x-1), M2 Test 40 input (consistency)" begin
     Rp, (x,) = polynomial_ring(QQ, ["x"])
     A, _ = quo(Rp, ideal(Rp, [x^5 - x - 1]))
     M = matrix(A, 3, 3,
@@ -76,40 +81,87 @@ end
          A(3 * x^2 + 4 * x^4), A(5), A(1),
          A(8 * x^3 + 4), A(1), A(7 * x^2 + 3 * x)])
     GQ = transfer_gw(GWClass(M))
-    # M2: === makeDiagonalForm(QQ, (5, -75, 17059280/279299)) — literal
-    @test GQ == diagonal_form(QQ, (5, -75, QQ(17059280, 279299)))
+    @test form_rank(GQ) == 15                     # rank 3 times [L:QQ] = 5
+    # entry (5(i-1)+s, 5(j-1)+t) is Tr(M[i, j] b_s b_t) for b = 1, x, ..., x^4
+    b = [A(x^m) for m in 0:4]
+    G = gw_matrix(GQ)
+    @test all(G[5 * (i - 1) + s, 5 * (j - 1) + t] == algebra_trace(A, M[i, j] * b[s] * b[t])
+              for i in 1:3, j in 1:3, s in 1:5, t in 1:5)
+    # trace form of L/QQ: Tr(x^m) = 5, 0, 0, 0, 4, 5, 0, 0, 4 for m = 0..8
+    # (Newton's identities, then x^5 = x + 1)
+    T = matrix(QQ, [5 0 0 0 4; 0 0 0 4 5; 0 0 4 5 0; 0 4 5 0 0; 4 5 0 0 4])
+    @test det(G) == det(T)^3 * algebra_norm(A, det(M))
+    # x^5 - x - 1 has one real root, at which M has signature 1; each pair of
+    # complex embeddings contributes only hyperbolic planes
+    @test form_signature(GQ) == 1
+    # the transfer is the restriction of scalars of the quadratic space
+    Rz, z = polynomial_ring(QQ, "z")
+    K, r = number_field(z^5 - z - 1, "r")
+    MK = map_entries(e -> evaluate(lift(e), [r]), M)
+    V, _ = restrict_scalars(quadratic_space(K, MK), QQ)
+    @test is_isomorphic_form(GQ, GWClass(gram_matrix(V)))
 end
 
-@testset "M2 Test 41 — transferGW over GF(7)[x]/(x^3+6x^2+4)" begin
+@testset "Transfer over GF(7)[x]/(x^3+6x^2+4), M2 Test 41 input (consistency)" begin
     k = GF(7)
     Rp, (x,) = polynomial_ring(k, ["x"])
-    A, _ = quo(Rp, ideal(Rp, [x^3 + 6 * x^2 + 4]))
+    A, _ = quo(Rp, ideal(Rp, [x^3 + 6 * x^2 + 4]))   # irreducible: A is GF(7^3)
     M = matrix(A, 3, 3,
         [A(1), A(2), A(x),
          A(2), A(x^2 + 5), A(3 * x + 2),
          A(x), A(3 * x + 2), A(5)])
     G7 = transfer_gw(GWClass(M))
-    @test is_isomorphic_form(G7, diagonal_form(k, (3, 4, 4)))
-    @test gw_matrix(G7) == matrix(k, 3, 3,
-        [k(3), k(0), k(0), k(0), k(-3), k(0), k(0), k(0), k(-3)])   # M2 capture
+    @test form_rank(G7) == 9
+    # trace form on 1, x, x^2: Tr(x^m) = 3, 1, 1, 3, 6 for m = 0..4 (Newton's
+    # identities); its determinant 4 is a square, and N(det M) = 1
+    T = matrix(k, [3 1 1; 1 1 3; 1 3 6])
+    @test transfer_gw(GWClass(matrix(A, 1, 1, [A(1)]))) == GWClass(T)
+    @test det(T) == k(4)
+    @test algebra_norm(A, det(M)) == one(k)
+    @test det(gw_matrix(G7)) == det(T)^3 * algebra_norm(A, det(M))
+    # over a finite field, rank and discriminant classify forms
+    @test is_isomorphic_form(G7, diagonal_form(k, (1, 1, 1, 1, 1, 1, 1, 1, 1)))
 end
 
-@testset "Transfer cross-checks (independent of M2)" begin
+@testset "Transfer cross-checks (consistency)" begin
     Rp, (x,) = polynomial_ring(QQ, ["x"])
     A, _ = quo(Rp, ideal(Rp, [x^5 - x - 1]))
-    # rank is preserved by M2's construction (entrywise trace of a diagonalization);
-    # for x^5-x-1: tr(x^4) = 4, tr(x+1) = 5 (Newton's identities)
-    M = matrix(A, 2, 2, [A(x^4), A(0), A(0), A(x + 1)])
-    @test transfer_gw(GWClass(M)) == diagonal_form(QQ, (4, 5))
-    @test form_rank(transfer_gw(GWClass(M))) == 2
-    # trace of 1 in a degree-5 extension is 5: transfer of <1,1> is <5,5>
-    I2 = matrix(A, 2, 2, [A(1), A(0), A(0), A(1)])
-    @test transfer_gw(GWClass(I2)) == diagonal_form(QQ, (5, 5))
-    # LIMITATION shared with M2: the entrywise trace can vanish on a nondegenerate
-    # input, and the resulting degenerate diagonal form is rejected — M2's
-    # makeGWClass errors identically (e.g. tr(x) = 0 here).
-    Mbad = matrix(A, 2, 2, [A(x), A(1), A(1), A(x^2)])
-    @test_throws ErrorException transfer_gw(GWClass(Mbad))
+    # <1> goes to the trace form of A/QQ (Newton's identities, as above)
+    T = matrix(QQ, [5 0 0 0 4; 0 0 0 4 5; 0 0 4 5 0; 0 4 5 0 0; 4 5 0 0 4])
+    @test transfer_gw(GWClass(matrix(A, 1, 1, [A(1)]))) == GWClass(T)
+    # the rank is multiplied by [A:QQ] = 5, and a diagonal form goes to the direct
+    # sum of the transfers of its entries
+    D = transfer_gw(GWClass(matrix(A, 2, 2, [A(x^4), A(0), A(0), A(x + 1)])))
+    @test form_rank(D) == 10
+    @test D == gw_direct_sum(transfer_gw(GWClass(matrix(A, 1, 1, [A(x^4)]))),
+                             transfer_gw(GWClass(matrix(A, 1, 1, [A(x + 1)]))))
+    # an entry of trace zero is no obstruction (Tr(x) = 0): a nondegenerate form
+    # over a field transfers to a nondegenerate form
+    Mx = matrix(A, 2, 2, [A(x), A(1), A(1), A(x^2)])
+    @test form_rank(transfer_gw(GWClass(Mx))) == 10
+    # well defined on classes: a congruent Gram matrix has an isomorphic transfer
+    P = matrix(A, 2, 2, [A(1), A(x), A(0), A(1)])
+    @test is_isomorphic_form(transfer_gw(GWClass(transpose(P) * Mx * P)),
+                             transfer_gw(GWClass(Mx)))
+    # <1> and <x^2> = <2> are the same class over QQ(sqrt 2), and so are their
+    # transfers <2, 4> and <4, 8>
+    B, _ = quo(Rp, ideal(Rp, [x^2 - 2]))
+    t1 = transfer_gw(GWClass(matrix(B, 1, 1, [B(1)])))
+    t2 = transfer_gw(GWClass(matrix(B, 1, 1, [B(x^2)])))
+    @test t1 == diagonal_form(QQ, (2, 4))
+    @test t2 == diagonal_form(QQ, (4, 8))
+    @test is_isomorphic_form(t1, t2)
+    # over QQ[t]/(t^2 - 1) = QQ x QQ, the sum of the specializations t = 1, t = -1
+    St, (t,) = polynomial_ring(QQ, ["t"])
+    E, _ = quo(St, ideal(St, [t^2 - 1]))
+    beta = GWClass(matrix(E, 2, 2, [E(1), E(2), E(2), E(t)]))
+    @test transfer_gw(beta) ==
+        GWClass(matrix(QQ, [2 0 4 0; 0 2 0 4; 4 0 0 2; 0 4 2 0]))
+    @test is_isomorphic_form(transfer_gw(beta),
+        gw_direct_sum(GWClass(QQ[1 2; 2 1]), GWClass(QQ[1 2; 2 -1])))
+    # 1 + t is a zero divisor (it maps to (2, 0)), so <1 + t> is degenerate on a
+    # factor and has no transfer
+    @test_throws ErrorException transfer_gw(GWClass(matrix(E, 1, 1, [E(1 + t)])))
 end
 
 @testset "M2 Test 36 — unstable degrees over QQ (literal + class-level)" begin
