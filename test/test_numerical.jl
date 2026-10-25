@@ -47,6 +47,22 @@ end
     @test abs(gw_scalar(L5) - 0.1875) < 1e-8      # M2: 3/16
 end
 
+@testset "CC unstable degrees with a non-monic numerator (consistency)" begin
+    # The pair (f, g) stands for the rational function f/g, normalized by the
+    # leading coefficient of f as on the exact path: for f/g = (x^2-3x+2)/((x-4)/2)
+    # the scalars are -Res = -(g(1) g(2)) = -3/2, then 3/2 at 1 and -1 at 2
+    for (f, g) in ((2x^2 - 6x + 4, x - 4), (4x^2 - 12x + 8, 2x - 8))
+        @test abs(gw_scalar(global_unstable_A1_degree(f, g)) - (-1.5)) < 1e-8
+        @test abs(gw_scalar(local_unstable_A1_degree(f, g, 1)) - 1.5) < 1e-8
+        @test abs(gw_scalar(local_unstable_A1_degree(f, g, 2)) - (-1.0)) < 1e-8
+    end
+    # negative leading coefficient: f/g = (x^3 - x)/(-3/2), so the global scalar
+    # is -(-3/2)^3 = 27/8 and the local one at 0 is (-3/2)/((0-1)(0+1)) = 3/2
+    three = HC.Expression(3)
+    @test abs(gw_scalar(global_unstable_A1_degree(-2x^3 + 2x, three)) - 27 / 8) < 1e-8
+    @test abs(gw_scalar(local_unstable_A1_degree(-2x^3 + 2x, three, 0)) - 1.5) < 1e-8
+end
+
 @testset "CC error paths (M2 UnstableLocalGlobalDegrees.m2 source)" begin
     f = (x - 1) * (x - 2) * (x - 3)
     g = (x - 1) * (x - 4)
