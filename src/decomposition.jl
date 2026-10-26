@@ -229,10 +229,13 @@ anisotropic_part(alpha::GWClass) = GWClass(anisotropic_part(gw_matrix(alpha)))
 _m2_string(x::QQFieldElem) = isone(denominator(x)) ? string(numerator(x)) :
     string(numerator(x)) * "/" * string(denominator(x))
 _m2_string(x::ZZRingElem) = string(x)
+# the integer of a prime-field element; Nemo's legacy Native.GF(p, n) types have no lift
+_prime_field_integer(x::FinFieldElem) = lift(ZZ, x)
+_prime_field_integer(x::Union{fqPolyRepFieldElem, FqPolyRepFieldElem}) = ZZ(coeff(x, 0))
 function _m2_string(x::FinFieldElem)
     p = characteristic(parent(x))
     x^p == x || return string(x)   # outside the prime field: no integer to balance
-    v = lift(ZZ, x)
+    v = _prime_field_integer(x)
     string(2 * v > p ? v - p : v)
 end
 _m2_string(x::Float64) = isinteger(x) ? string(Int(x)) : string(x)

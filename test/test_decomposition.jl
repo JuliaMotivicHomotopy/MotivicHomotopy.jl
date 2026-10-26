@@ -167,6 +167,19 @@ end
     @test sum_decomposition_string(GWClass(matrix(F25, 1, 1, [F25(4)]))) == "<-1>"
     @test sum_decomposition_string(GWClass(matrix(F25, 1, 1, [o]))) == "<o>"
     @test sum_decomposition_string(GWClass(matrix(F25, [o 1; 1 2]))) isa String
+
+    # Nemo's legacy fields from Native.finite_field have their own element types
+    # and print as finite_field does
+    F9, a = finite_field(3, 2, "a")
+    for (G9, b) in (Native.finite_field(3, 2, "a"), Native.finite_field(ZZ(3), 2, "a"))
+        @test sum_decomposition_string(GWClass(matrix(G9, 1, 1, [G9(2)]))) == "<-1>"
+        @test sum_decomposition_string(GWClass(diagonal_matrix(G9, [G9(1), b]))) == "<1> + <a>"
+        for (m, n) in ((matrix(F9, [a 1; 1 2]), matrix(G9, [b 1; 1 2])),
+                       (diagonal_matrix(F9, [F9(1), F9(1), F9(1), a]),
+                        diagonal_matrix(G9, [G9(1), G9(1), G9(1), b])))
+            @test sum_decomposition_string(GWClass(n)) == sum_decomposition_string(GWClass(m))
+        end
+    end
 end
 
 @testset "Unstable sum decomposition (M2 capture)" begin
